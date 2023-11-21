@@ -70,6 +70,7 @@ pureLit("adoe-select-pipelines", async (el) => {
     useOnce(el, () => {
         org.onChange(() => el.reinitialize())
         projects.onChange(() => el.reinitialize())
+        setInterval(() => el.reinitialize(), 1000 * 60)
     })
 
     if (!org.get() || projects.get().length < 1) return html``
