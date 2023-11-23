@@ -1,20 +1,24 @@
-# Azure DevOps (N)evergreen Dashboard
+# Catgreen Dashboard
 
-This is a dashboard that either shows your failing builds, or a random cat gif if there's nothing failing
+This is a dashboard that either shows your failing builds, or a random cat gif if there's nothing failing. So it's way of saying "all green" is showing a cat. 
+
+Supports currently
+- Azure DevOps
+- Github
 
 ## Usage
 
 Open your bash and type in the following commands
 
 ```bash
-echo "Replace this with a Azure DevOps PAT with builds, definitions, pipeline permissions" > .env
+# One time setup
+./setup
+
 # setup correct node version
 nvm use
 # download the internet
 npm install
 # start the app
-
-
 npm run dev
 # OR start the app, but really fast
 npm start 

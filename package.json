@@ -1,5 +1,5 @@
 {
-  "name": "azure-devops-evergreen",
+  "name": "catgreen",
   "private": true,
   "version": "1.0.0",
   "author": "Matthias Kainer",
@@ -7,20 +7,25 @@
   "scripts": {
     "dev": "nodemon src/server/main.ts -w src/server",
     "start": "NODE_ENV=production ts-node src/server/main.ts",
-    "build": "vite build"
+    "build": "vite build",
+    "test": "vitest"
   },
   "devDependencies": {
     "@types/express": "^4.17.15",
+    "@types/express-session": "^1.17.10",
     "@types/node": "^18.11.18",
     "nodemon": "^3.0.1",
-    "vite": "^4.0.4"
+    "vite": "^4.0.4",
+    "vitest": "^0.34.6"
   },
   "dependencies": {
-    "@types/express-session": "^1.17.10",
+    "@octokit/graphql": "^7.0.2",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
     "express-session": "^1.17.3",
     "lit": "^3.1.0",
+    "nested-css-to-flat": "^1.0.5",
     "p-limit": "^3.0.0",
     "pure-lit": "^3.0.2",
     "ts-node": "^10.9.1",
