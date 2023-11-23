@@ -17,6 +17,10 @@ export default pureLit("adoe-build-results", async (el) => {
         setInterval(() => el.reinitialize(), 1000 * 60)
     })
 
+    el.shadowRoot!.adoptedStyleSheets
+        .push(css`:host { zoom: 1; }`.styleSheet)
+
+
     const names = name.get()
 
     if (!names || names.length < 1) {
@@ -36,7 +40,7 @@ export default pureLit("adoe-build-results", async (el) => {
         .filter((item: Build) => item.result === "failed" || (item.result === "running" && showInProgress.get()))
 
     if (combined.length < 1) {
-        return html`<img src="https://cataas.com/cat/gif" alt="no issue, watch cats" title="a random cat for a green build">`
+        return html`<img src="https://cataas.com/cat/gif?c=${new Date().getTime()}" alt="no issue, watch cats" title="a random cat for a green build">`
     }
 
     function calculateZoom(numElements: number) {
