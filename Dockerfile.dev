@@ -1,0 +1,39 @@
+FROM debian:sid-slim as build
+
+RUN mkdir -p /usr/local/nvm
+ENV NVM_DIR /usr/local/nvm 
+
+RUN apt-get update && apt-get install -y curl bash git && \
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+
+WORKDIR /usr/src/app
+COPY .nvmrc .
+RUN . $NVM_DIR/nvm.sh; nvm install 
+
+COPY package*.json ./
+COPY src ./src
+COPY tsconfig* ./
+COPY vitest* ./
+COPY index.html ./
+RUN . $NVM_DIR/nvm.sh; nvm use && npm ci && npm run build
+
+FROM debian:sid-slim
+
+WORKDIR /usr/src/app
+ENV NVM_DIR /usr/local/nvm 
+ENV NODE_ENV production
+COPY --from=build /usr/src/app/dist ./dist
+COPY --from=build $NVM_DIR $NVM_DIR
+
+COPY package*.json ./
+COPY .nvmrc .
+RUN JOBS=MAX . $NVM_DIR/nvm.sh && nvm use && npm ci --omit=dev --unsafe-perm && npm i @types/express && npm cache verify && rm -rf /tmp/*
+
+COPY src/domain ./src/domain
+COPY src/server ./src/server
+COPY tsconfig* ./
+COPY bin/start ./bin/start
+
+RUN chmod +x bin/start
+
+CMD ["bin/start"]

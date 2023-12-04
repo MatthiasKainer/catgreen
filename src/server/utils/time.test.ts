@@ -1,9 +1,9 @@
 import { getTimeAgo } from "./time";
 
-import {describe, test, expect} from "vitest"
+import { describe, test, expect } from "vitest";
 
-describe('getTimeAgo', () => {
-  test('returns undefined for a non-date', () => {
+describe("getTimeAgo", () => {
+  test("returns undefined for a non-date", () => {
     expect(getTimeAgo(null as any as string)).toBe(undefined);
     expect(getTimeAgo(undefined as any as string)).toBe(undefined);
     expect(getTimeAgo("lalala")).toBe(undefined);

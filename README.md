@@ -1,8 +1,12 @@
 # Catgreen Dashboard
 
-This is a dashboard that either shows your failing builds, or a random cat gif if there's nothing failing. So it's way of saying "all green" is showing a cat. 
+[![balena deploy button](https://www.balena.io/deploy.svg)](https://dashboard.balena-cloud.com/deploy?repoUrl=https://github.com/MatthiasKainer/catgreen)
+
+
+This is a dashboard that either shows your failing builds, or a random cat gif if there's nothing failing. So it's way of saying "all green" is showing a cat.
 
 Supports currently
+
 - Azure DevOps
 - Github
 
@@ -21,7 +25,7 @@ npm install
 # start the app
 npm run dev
 # OR start the app, but really fast
-npm start 
+npm start
 ```
 
 After that, open your browser on the site <http://localhost:3000>.

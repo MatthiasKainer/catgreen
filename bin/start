@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -eu
+
+. $NVM_DIR/nvm.sh
+npm start

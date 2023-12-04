@@ -1,7 +1,7 @@
-import path from "path"
-import 'express-async-errors';
+import path from "path";
+import "express-async-errors";
 import express from "express";
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 import ViteExpress from "vite-express";
 import * as dotenv from "dotenv";
 import { getApi } from "./clients";
@@ -11,7 +11,10 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use("/assets", express.static(path.join(__dirname, "public"), { maxAge: yearsToMs(1) }));
+app.use(
+  "/assets",
+  express.static(path.join(__dirname, "public"), { maxAge: yearsToMs(1) }),
+);
 
 app.get("/intl", (_, res) => {
   res.send({
@@ -29,30 +32,55 @@ Github:
 
 You can combine multiple sources simply by writing them as a comma separated list.
 
-  `
+  `,
+    },
+    "filter-results": {
+      label: "Filter",
+      placeholder: "name:catgreen,name:pure-lit,meta.blame:Matthias Kainer",
+      tooltip: `To filter, add the filter statement in the form
+
+  [field]:[query]
+
+  possible fields are
+  - id
+  - name
+  - result ("unknown" | "failed" | "success" | "running")
+  - meta.triggerReason
+  - meta.blame
+  - link
+  - timestamp
+
+  `,
     },
     "filter-progress": "Show running builds",
-  })
-})
-
-app.get("/status/*", async (req, res) => {
-  if (!process.env.PAT_TOKEN) {
-    res.status(401).send({ status: "NOAUTH" });
-  } else {
-    const name = req.path.replace("/status/", "")
-    const pipelineUrl = PipelineUrl.splitString(name)
-    const pipelineProvider = getApi(pipelineUrl.protocol)
-    const api = pipelineProvider.client(pipelineUrl.path)
-    const data = await api.load()
-    res.json({ status: "OK", data })
-  }
-})
-
-app.use((err: Error, _: Request, res: Response, _1: NextFunction) => {
-  console.error(err)
-  return res.status(500).json({ status: "ERROR", message: "Something truly aweful has happened. I'm not going to tell you what, but lordy lou it's terrible!" })
+  });
 });
 
-ViteExpress.listen(app, 3000, () =>
-  console.log("Server is listening on port 3000...")
+app.get("/status/*", async (req, res) => {
+  if (!process.env.AZURE_DEVOPS_PAT_TOKEN) {
+    res.status(401).send({ status: "NOAUTH" });
+  } else {
+    const name = req.path.replace("/status/", "");
+    const pipelineUrl = PipelineUrl.splitString(name);
+    const pipelineProvider = getApi(pipelineUrl.protocol);
+    const api = pipelineProvider.client(pipelineUrl.path);
+    const data = await api.load();
+    res.json({ status: "OK", data });
+  }
+});
+
+app.use((err: Error, _: Request, res: Response, _1: NextFunction) => {
+  console.error(err);
+  return res
+    .status(500)
+    .json({
+      status: "ERROR",
+      message:
+        "Something truly aweful has happened. I'm not going to tell you what, but lordy lou it's terrible!",
+    });
+});
+
+const port = parseInt(process.env.PORT ?? "3000", 10);
+ViteExpress.listen(app, port, () =>
+  console.log(`Server is listening on port ${port}... Open http://localhost:${port} to see for yourself`),
 );
