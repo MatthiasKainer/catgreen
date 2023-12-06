@@ -64,3 +64,9 @@ fi
 echo '#!/bin/bash
 
 npx -y lint-staged' > .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+
+echo '#!/bin/bash
+
+npm test -- run' > .git/hooks/pre-push
+chmod +x .git/hooks/pre-push
