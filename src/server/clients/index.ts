@@ -9,9 +9,9 @@ function isValid(provider: string): provider is Providers {
   return Object.hasOwn(providers, provider);
 }
 
-export const getApi = (provider: Providers | string): Client => {
+export const getApi = (provider: Providers | string): Client | null => {
   if (!isValid(provider)) {
-    throw new Error("Unknown pipeline provider " + provider);
+    return null;
   }
 
   return providers[provider];

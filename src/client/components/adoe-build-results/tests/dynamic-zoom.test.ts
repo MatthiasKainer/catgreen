@@ -1,4 +1,13 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
+vi.mock("../../../service/env-init", () => {
+  function EnvInit() {
+    return {
+      name: Promise.resolve("hola"),
+      filter: Promise.resolve("mundo"),
+    };
+  }
+  return { EnvInit };
+});
 import { calculateZoom } from "../adoe-build-results";
 
 describe("dynamic zoom function", () => {

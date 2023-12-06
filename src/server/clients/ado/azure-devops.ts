@@ -15,7 +15,8 @@ export const client = (name: string) => {
     <T>(): Promise<T> =>
       fetch(`https://dev.azure.com/${name}/_apis/${path}`, {
         headers: {
-          Authorization: "Basic " + btoa(":" + process.env.AZURE_DEVOPS_PAT_TOKEN),
+          Authorization:
+            "Basic " + btoa(":" + process.env.AZURE_DEVOPS_PAT_TOKEN),
         },
         redirect: "follow",
       }).then((r) => r.json());

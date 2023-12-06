@@ -54,7 +54,9 @@ export default pureLit(
     );
 
     if (builds.some((p) => p.status !== "OK"))
-      return html`An error has occured`;
+      return html`<p>
+        ${builds.filter((p) => p.status !== "OK").map((p) => p.status)}
+      </p>`;
 
     const combined = magicResult(
       builds.reduce((prev, next) => [...prev, ...next.data], [] as Build[]),

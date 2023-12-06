@@ -2,7 +2,6 @@
 
 [![balena deploy button](https://www.balena.io/deploy.svg)](https://dashboard.balena-cloud.com/deploy?repoUrl=https://github.com/MatthiasKainer/catgreen)
 
-
 This is a dashboard that either shows your failing builds, or a random cat gif if there's nothing failing. So it's way of saying "all green" is showing a cat.
 
 Supports currently

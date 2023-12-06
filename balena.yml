@@ -3,13 +3,13 @@ type: sw.application
 description: >-
   A dashboard that either showing you your failing builds on Azure DevOps and GitHub, 
   or a random cat gif if there's nothing failing. 
-  
+
   So it's way of saying "all green" by showing you a cat.
 assets:
   repository:
     type: blob.asset
     data:
-      url: 'https://github.com/MatthiasKainer/catgreen'
+      url: "https://github.com/MatthiasKainer/catgreen"
   logo:
     type: blob.asset
     data:
@@ -19,4 +19,6 @@ data:
   applicationEnvironmentVariables:
     - AZURE_DEVOPS_PAT_TOKEN: ""
     - GITHUB_API_TOKEN: ""
+    - CONFIG_NAME: ""
+    - CONFIG_FILTER: ""
 version: 1.0.0

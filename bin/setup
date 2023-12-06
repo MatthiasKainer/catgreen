@@ -60,3 +60,7 @@ cat "$1" | bin/rcop' > .git/hooks/commit-msg
     chmod +x .git/hooks/commit-msg
     echo "[SETUP][rcop] Installation completed."
 fi
+
+echo '#!/bin/bash
+
+npx -y lint-staged' > .git/hooks/pre-commit

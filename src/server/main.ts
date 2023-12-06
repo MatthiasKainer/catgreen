@@ -56,31 +56,52 @@ You can combine multiple sources simply by writing them as a comma separated lis
   });
 });
 
+app.get("/env-init/:key", (req, res) => {
+  const { key } = req.params;
+  switch (key) {
+    case "name":
+      return process.env.CONFIG_NAME
+        ? res.json({ status: "OK", data: process.env.CONFIG_NAME })
+        : res.status(404).json({ status: "NOT FOUND" });
+    case "filter":
+      return process.env.CONFIG_FILTER
+        ? res.json({ status: "OK", data: process.env.CONFIG_FILTER })
+        : res.status(404).json({ status: "NOT FOUND" });
+  }
+  return res.status(404).json({ status: "NOT FOUND" });
+});
+
 app.get("/status/*", async (req, res) => {
-  if (!process.env.AZURE_DEVOPS_PAT_TOKEN) {
+  if (!process.env.AZURE_DEVOPS_PAT_TOKEN || !process.env.GITHUB_API_TOKEN) {
     res.status(401).send({ status: "NOAUTH" });
+  } else if (req.path.replace("/status/", "") === "") {
+    res.status(400).send({ status: "NO PIPELINE" });
   } else {
     const name = req.path.replace("/status/", "");
     const pipelineUrl = PipelineUrl.splitString(name);
     const pipelineProvider = getApi(pipelineUrl.protocol);
-    const api = pipelineProvider.client(pipelineUrl.path);
-    const data = await api.load();
-    res.json({ status: "OK", data });
+    if (!pipelineProvider) {
+      res.send(404).json({ status: "PROVIDER NOT FOUND" });
+    } else {
+      const api = pipelineProvider.client(pipelineUrl.path);
+      const data = await api.load();
+      res.json({ status: "OK", data });
+    }
   }
 });
 
 app.use((err: Error, _: Request, res: Response, _1: NextFunction) => {
   console.error(err);
-  return res
-    .status(500)
-    .json({
-      status: "ERROR",
-      message:
-        "Something truly aweful has happened. I'm not going to tell you what, but lordy lou it's terrible!",
-    });
+  return res.status(500).json({
+    status: "ERROR",
+    message:
+      "Something truly aweful has happened. I'm not going to tell you what, but lordy lou it's terrible!",
+  });
 });
 
 const port = parseInt(process.env.PORT ?? "3000", 10);
 ViteExpress.listen(app, port, () =>
-  console.log(`Server is listening on port ${port}... Open http://localhost:${port} to see for yourself`),
+  console.log(
+    `Server is listening on port ${port}... Open http://localhost:${port} to see for yourself`,
+  ),
 );

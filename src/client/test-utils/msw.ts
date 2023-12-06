@@ -1,16 +1,35 @@
-import { http, HttpResponse } from "msw";
+import { http, HttpResponse, HttpResponseInit } from "msw";
 import { setupServer } from "msw/node";
 import response from "./response.json";
 
 const createHandler = {
-  get: (path: string, jsonResponse: Object) =>
+  get: (path: string, jsonResponse: Object, status?: HttpResponseInit) =>
     http.get(
       `${window.location.protocol}//${window.location.host}/${path}`,
       () => {
-        return new HttpResponse(JSON.stringify(jsonResponse));
+        return new HttpResponse(JSON.stringify(jsonResponse), status);
       },
     ),
 };
+
+export const initNonDefinedEnvHandlers = [
+  createHandler.get("env-init/name", { status: "NOT FOUND" }, { status: 404 }),
+  createHandler.get(
+    "env-init/filter",
+    { status: "NOT FOUND" },
+    { status: 404 },
+  ),
+];
+export const initDefinedEnvHandlers = [
+  createHandler.get("env-init/name", {
+    status: "OK",
+    data: "gh:MatthiasKainer",
+  }),
+  createHandler.get("env-init/filter", {
+    status: "OK",
+    data: "meta.blame:Matthias Kainer",
+  }),
+];
 
 export const statusHandlers = [
   createHandler.get("status/test", { status: "OK", data: [] }),
@@ -44,7 +63,7 @@ export const statusHandlers = [
       },
     ],
   }),
-  createHandler.get("status/err", { status: "ERR", data: [] }),
+  createHandler.get("status/err", { status: "Totally your fault", data: [] }),
   createHandler.get("status/", { status: "ERR", data: [] }),
 ];
 export const setup = setupServer;
