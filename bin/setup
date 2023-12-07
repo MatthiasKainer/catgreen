@@ -13,8 +13,7 @@ else
         while [[ -z "$ado_token" ]]; do
             read -s -p "Enter Azure DevOps pat token: " ado_token
         done 
-        echo "AZURE_DEVOPS_PAT_TOKEN=\"$ado_token\"
-    " >> .env
+        echo "AZURE_DEVOPS_PAT_TOKEN=$ado_token" >> .env
         echo .
     }
 
@@ -23,8 +22,7 @@ else
         while [[ -z "$GITHUB_API_TOKEN" ]]; do
             read -s -p "Enter API token: " GITHUB_API_TOKEN
         done 
-        echo "GITHUB_API_TOKEN=\"$GITHUB_API_TOKEN\"
-    " >> .env
+        echo "GITHUB_API_TOKEN=$GITHUB_API_TOKEN" >> .env
     }
 fi
 
@@ -62,11 +60,9 @@ cat "$1" | bin/rcop' > .git/hooks/commit-msg
 fi
 
 echo '#!/bin/bash
-
 npx -y lint-staged' > .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 
 echo '#!/bin/bash
-
 npm test -- run' > .git/hooks/pre-push
 chmod +x .git/hooks/pre-push
