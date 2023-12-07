@@ -13,7 +13,7 @@ RUN . $NVM_DIR/nvm.sh; nvm install
 COPY package*.json ./
 COPY src ./src
 COPY tsconfig* ./
-COPY vitest* ./
+COPY vite* ./
 COPY index.html ./
 RUN . $NVM_DIR/nvm.sh; nvm use && npm ci && npm run build
 
