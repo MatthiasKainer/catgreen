@@ -20,7 +20,7 @@ app.get("/intl", (_, res) => {
   res.send({
     "filter-name": {
       label: "Add a list of pipeline sources",
-      placeholder: "ado:org/project,gh:owner",
+      placeholder: "ado:org/project,gh:owner,gl:path",
       tooltip: `Pipeline sources follow a specific convention:
   pipeline-provider:repos-reference
 
@@ -29,6 +29,8 @@ Azure DevOps:
   ado:organization/project -> This will load all repos from the project
 Github:
   gh:owner ->This will load all repos from the owner
+Gitlab:
+  gl:path -> This will load all projects under this path
 
 You can combine multiple sources simply by writing them as a comma separated list.
 

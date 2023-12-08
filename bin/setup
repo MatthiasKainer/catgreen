@@ -24,6 +24,14 @@ else
         done 
         echo "GITHUB_API_TOKEN=$GITHUB_API_TOKEN" >> .env
     }
+
+    read -p "Are you using Gitlab? (N/y) " && [[ "$REPLY" == [yY] ]] && {
+        GITLAB_API_TOKEN=""
+        while [[ -z "$GITLAB_API_TOKEN" ]]; do
+            read -s -p "Enter API token: " GITLAB_API_TOKEN
+        done 
+        echo "GITLAB_API_TOKEN=$GITLAB_API_TOKEN" >> .env
+    }
 fi
 
 echo "Setting up git"

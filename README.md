@@ -49,6 +49,7 @@ For the different providers, that leads to the following urls:
 | ------------ | ------------------------ | ----------------------------------------- |
 | Azure DevOps | ado:organization/project | This will load all repos from the project |
 | Github       | gh:owner                 | This will load all repos from the owner   |
+| Gitlab       | gl:path                 | This will load all projects for this path   |
 
 You can combine multiple sources simply by writing them as a comma separated list.
 
@@ -62,6 +63,9 @@ Example Azure DevOps: https://dev.azure.com/MatthiasKainer/private/_build
 
 Both of the above in one view
 > gh:MatthiasKainer,ado:MatthiasKainer/private
+
+Example gitlab, everything under gitlabs own security products
+> gl:gitlab-org/security-products
 
 ### Filters
 
