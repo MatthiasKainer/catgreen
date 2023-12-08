@@ -1,7 +1,19 @@
 version: "2"
 
 services:
-  cargreen:
+  wpe:
+    restart: always
+    build: balenablocks/browser
+    depends_on:
+      - catgreen
+    privileged: true
+    network_mode: host
+    environment:
+      SHOW_CURSOR: 0
+      KIOSK: 1
+      LAUNCH_URL: http://localhost:3000/
+
+  catgreen:
     build: .
     ports:
       - "3000:3000"
