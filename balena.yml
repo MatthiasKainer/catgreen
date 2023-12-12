@@ -21,4 +21,4 @@ data:
     - GITHUB_API_TOKEN: ""
     - CONFIG_NAME: ""
     - CONFIG_FILTER: ""
-version: 1.0.1
+version: 1.0.2

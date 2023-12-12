@@ -1,0 +1,28 @@
+#!/bin/bash
+
+read -p "Enter version type (major, minor or patch [default: patch]): " version_type
+if [ -z "$version_type" ]; then
+  version_type="patch"
+fi
+
+current_version=$(cat package.json | grep '"version":' | cut -d '"' -f 4)
+
+case $version_type in 
+  major)
+    new_version=$(echo $current_version | awk 'BEGIN{FS="."}{print ++$1 ".0.0"}')
+    ;;
+  minor)
+    new_version=$(echo $current_version | awk 'BEGIN{FS="."}{print $1 "." ++$2 ".0"}')
+    ;;
+  patch)
+    new_version=$(echo $current_version | awk 'BEGIN{FS="."}{print $1 "." $2 "." ++$3}')
+esac
+
+if [ -z "$new_version" ]; then
+    echo "Could not generate a new version"
+    exit 1
+fi
+
+sed -i "s/$current_version/$new_version/g" package.json balena.yml
+
+echo "Updated from $current_version to $new_version successfully"
