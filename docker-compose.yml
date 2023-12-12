@@ -3,7 +3,7 @@ version: "2"
 services:
   wpe:
     restart: always
-    build: balenablocks/browser
+    image: balenablocks/browser
     depends_on:
       - catgreen
     privileged: true
