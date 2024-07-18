@@ -74,7 +74,9 @@ app.get("/env-init/:key", (req, res) => {
 });
 
 app.get("/status/*", async (req, res) => {
-  if (!process.env.AZURE_DEVOPS_PAT_TOKEN || !process.env.GITHUB_API_TOKEN) {
+  if (!process.env.AZURE_DEVOPS_PAT_TOKEN
+     && !process.env.GITHUB_API_TOKEN
+     && !process.env.GITLAB_API_TOKEN) {
     res.status(401).send({ status: "NOAUTH" });
   } else if (req.path.replace("/status/", "") === "") {
     res.status(400).send({ status: "NO PIPELINE" });

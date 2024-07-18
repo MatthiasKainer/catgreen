@@ -2,14 +2,61 @@ import { Build, BuildResult } from "../../../domain/build";
 import { getTimeAgo } from "../../utils/time";
 import { GitlabResponse, Pipeline } from "./types";
 
-const gitlabGraphqlClient = (options: RequestInit) => {
-  return async () =>
-    await fetch("https://gitlab.com/api/graphql", options).then((r) => {
+const getCursor = (cursor: string | undefined) => (cursor ? `(after: "${cursor}")` : "");
+
+const gitlabGraphqlClient = (options: RequestInit, cursor: string | undefined = undefined) => {
+  const gitlabHost = process.env.GITLAB_HOST ?? "gitlab.com"
+  options.body = ql`{
+projects${getCursor(cursor)} {
+    count
+    pageInfo {
+      endCursor
+    }
+    nodes {
+      id
+      name
+      fullPath
+      pipelines(first: 1) {
+        nodes {
+          stages {
+            nodes {
+              name
+              status
+            }
+          }
+          id
+          status
+          path
+          
+          commit {
+            id
+            description
+            message
+            author {
+              name
+              publicEmail
+            }
+          }
+          createdAt
+        }
+      }
+    }
+  }
+}`;
+  return async () =>{
+    const data = await fetch(`https://${gitlabHost}/api/graphql`, options).then((r) => {
       if (r.status > 399) {
-        throw new Error(`Not-ok status code response: ${r.status}`);
+        throw new Error(`[gitlab][${gitlabHost}] Not-ok status code response: ${r.status}`);
       }
       return r;
-    });
+    }).then(
+      (response) => response.json() as Promise<GitlabResponse>,
+    );
+    if (data.data.projects.pageInfo.endCursor) {
+      data.data.projects.nodes.push(...(await gitlabGraphqlClient(options, data.data.projects.pageInfo.endCursor)()).data.projects.nodes);
+    }
+    return data;
+  }
 };
 
 const mapStatus = (status: string): BuildResult => {
@@ -30,6 +77,7 @@ const mapStatus = (status: string): BuildResult => {
 const mapPipelineToBuild =
   (project: string) =>
   (pipeline: Pipeline): Build => {
+    const gitlabHost = process.env.GITLAB_HOST ?? "gitlab.com"
     return {
       id: pipeline.id,
       name: project,
@@ -38,7 +86,7 @@ const mapPipelineToBuild =
         triggerReason: pipeline.commit?.message ?? "no commit",
         blame: pipeline.commit.author?.name ?? "unknown",
         timestamp: pipeline.createdAt,
-        link: `https://gitlab.com${pipeline.path}`,
+        link: `https://${gitlabHost}${pipeline.path}`,
         when: getTimeAgo(pipeline.createdAt) ?? "now",
       },
     };
@@ -65,48 +113,12 @@ export const client = (project: string) => {
       headers: {
         "Content-Type": "application/json",
         ...authorization(),
-      },
-      body: ql`{
-    projects(search: "${project}") {
-        count
-        nodes {
-          id
-          name
-          
-          pipelines(first: 1) {
-            nodes {
-              stages {
-                nodes {
-                  name
-                  status
-                }
-              }
-              id
-              status
-              path
-              
-              commit {
-                id
-                description
-                message
-                author {
-                  name
-                  publicEmail
-                }
-              }
-              createdAt
-            }
-          }
-        }
       }
-    }`,
     });
 
-    const { data } = await graphqlWithAuth().then(
-      (response) => response.json() as Promise<GitlabResponse>,
-    );
+    const { data } = await graphqlWithAuth();
 
-    return data.projects.nodes.reduce(
+    return data.projects.nodes.filter(p => p.fullPath.includes(project)).reduce(
       (builds, project) => (
         builds.push(
           ...project.pipelines.nodes.map(mapPipelineToBuild(project.name)),

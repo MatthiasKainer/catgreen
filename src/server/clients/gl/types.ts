@@ -25,10 +25,14 @@ export interface Author {
 export type GitlabResponse = {
   data: {
     projects: {
-      count: number;
+      count: number;  
+      pageInfo: {
+        endCursor: string | null;
+      };
       nodes: Array<{
         id: string;
         name: string;
+        fullPath: string;
         pipelines: {
           nodes: Array<Pipeline>;
         };
