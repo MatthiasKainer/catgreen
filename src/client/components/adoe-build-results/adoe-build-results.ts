@@ -8,10 +8,8 @@ import { magicResult } from "../../service/result-filter";
 
 export function calculateZoom(numElements: number) {
   const gradient =
-    1 -
-    Math.log10(numElements) /
-      Math.log10(100) /
-      (Math.log10(100) - Math.log10(1));
+    1 /
+    ((Math.sqrt(numElements - 3) / 1.5) +1);
   return Math.max(Math.min(gradient, 1), 0.2);
 }
 
